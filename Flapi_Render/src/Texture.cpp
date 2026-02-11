@@ -11,7 +11,7 @@ namespace FL_Render
 		m_Width = Width;
 		m_Height = Height;
 		m_Format = Format;
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_Texture);
+		glGenTextures(1, &m_Texture);
 		glBindTexture(GL_TEXTURE_2D, m_Texture);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -38,7 +38,7 @@ namespace FL_Render
 			return;
 		}
 
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_Texture);
+		glGenTextures(1, &m_Texture);
 		glBindTexture(GL_TEXTURE_2D, m_Texture);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -4,7 +4,7 @@ namespace FL_Render
 {
 	VertexArray::VertexArray()
 	{
-		glCreateVertexArrays(1, &m_RendererID);
+		glGenVertexArrays(1, &m_RendererID);
 		glBindVertexArray(m_RendererID);
 	}
 

@@ -16,6 +16,7 @@ public:
 	void Init();
 	void Run();
 	void Close();
+	void CheckEvents();
 private:
 	void Input();
 private:

@@ -36,10 +36,19 @@ namespace FL_Render
 			std::cout << "ERROR::WINDOW NOT CREATED!\n";
 			exit(0);
 		}
+		glfwSetWindowUserPointer(m_Window, this);
 		glfwMakeContextCurrent(m_Window);
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+				Window* win = (Window*)glfwGetWindowUserPointer(window);
+				win->m_EventsQueue.push_back(std::make_unique<EventWindowClose>());
+			});
+
 		glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int Width, int Height)
 			{
 				glViewport(0, 0, Width, Height);
+				Window* win = (Window*)glfwGetWindowUserPointer(window);
+				win->m_EventsQueue.push_back(std::make_unique<EventFramebufferSize>(Width, Height));
 			});
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

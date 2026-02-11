@@ -58,23 +58,42 @@ void App::Run()
 
 		FL_Render::Renderer::BeginScene(m_OrthoCam.GetCamera());
 
-		for (size_t x = 0; x < 100; x++)
-		{
-			for (size_t y = 0; y < 100; y++)
-			{
-				FL_Render::Renderer::SubmitData(vertices, indices, m_Textures["checkerboard.png"], glm::vec3(x, y, 0.0f), glm::vec3(0.9f));
-			}
-		}
+		FL_Render::Renderer::SubmitData(vertices, indices, m_Textures["checkerboard.png"], glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f));
 
 		FL_Render::Renderer::EndScene();
 
-		m_Window->Update(); 
+		m_Window->Update();
+		CheckEvents();
 	}
 }
 
 void App::Close()
 {
 	FL_Render::Renderer::Terminate();
+}
+
+void App::CheckEvents()
+{
+	auto& events = m_Window->GetEventsQueue();
+
+	while (!events.empty())
+	{
+		auto& event = events.back();
+		if (event->GetEventType() == FL_Render::EventType::WindowClose)
+		{
+			m_Running = false;
+		}
+		else if (event->GetEventType() == FL_Render::EventType::FramebufferSize)
+		{
+			auto* resizeEvent = static_cast<FL_Render::EventFramebufferSize*>(event.get());
+			uint32_t width = resizeEvent->GetWidth();
+			uint32_t height = resizeEvent->GetHeight();
+
+			std::cout << "Resized: " << width << " " << height << "\n";
+		}
+
+		events.pop_back();
+	}
 }
 
 void App::Input()

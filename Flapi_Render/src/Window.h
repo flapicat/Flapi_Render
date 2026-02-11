@@ -1,8 +1,12 @@
 #pragma once
+#include <memory>
+#include <vector>
 #include <string>
 
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
+
+#include "Events/Event.h"
 
 namespace FL_Render
 {
@@ -17,6 +21,8 @@ namespace FL_Render
 
 		uint32_t GetWidth() const { return m_WinData.Width; }
 		uint32_t GetHeight() const { return m_WinData.Height; }
+
+		std::vector<std::unique_ptr<Event>>& GetEventsQueue() { return m_EventsQueue; }
 	private:
 		void CreateWindow(uint32_t width, uint32_t height, const std::string& title);
 	private:
@@ -29,6 +35,7 @@ namespace FL_Render
 			std::string Title;
 		};
 		WinData m_WinData;
-	};
 
+		std::vector<std::unique_ptr<Event>> m_EventsQueue;
+	};
 }

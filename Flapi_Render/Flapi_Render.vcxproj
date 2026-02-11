@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="src\CameraOrthographic.cpp" />
     <ClCompile Include="src\CameraPerspective.cpp" />
+    <ClCompile Include="src\Events\Event.h" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\RenderCommands.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
