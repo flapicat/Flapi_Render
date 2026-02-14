@@ -102,6 +102,8 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\CameraOrthographic.h" />
     <ClInclude Include="src\CameraPerspective.h" />
+    <ClInclude Include="src\Events\InputEvent.h" />
+    <ClInclude Include="src\Events\WindowEvents.h" />
     <ClInclude Include="src\Flapi_Render.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\RenderCommands.h" />

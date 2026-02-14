@@ -79,6 +79,7 @@ void App::CheckEvents()
 	while (!events.empty())
 	{
 		auto& event = events.back();
+
 		if (event->GetEventType() == FL_Render::EventType::WindowClose)
 		{
 			m_Running = false;
@@ -86,10 +87,30 @@ void App::CheckEvents()
 		else if (event->GetEventType() == FL_Render::EventType::FramebufferSize)
 		{
 			auto* resizeEvent = static_cast<FL_Render::EventFramebufferSize*>(event.get());
-			uint32_t width = resizeEvent->GetWidth();
-			uint32_t height = resizeEvent->GetHeight();
-
-			std::cout << "Resized: " << width << " " << height << "\n";
+		}
+		else if (event->GetEventType() == FL_Render::EventType::ReSize)
+		{
+			const FL_Render::EventReSize* resizeEvent = static_cast<const FL_Render::EventReSize*>(event.get());
+		}
+		else if (event->GetEventType() == FL_Render::EventType::Key)
+		{
+			const FL_Render::EventKey* keyEvent = static_cast<const FL_Render::EventKey*>(event.get());
+		}
+		else if (event->GetEventType() == FL_Render::EventType::MouseButton)
+		{
+			const FL_Render::EventMouseButton* mouseButtonEvent = static_cast<const FL_Render::EventMouseButton*>(event.get());
+		}
+		else if (event->GetEventType() == FL_Render::EventType::CursorPos)
+		{
+			const FL_Render::EventCursorPos* cursorPosEvent = static_cast<const FL_Render::EventCursorPos*>(event.get());
+		}
+		else if (event->GetEventType() == FL_Render::EventType::Scroll)
+		{
+			const FL_Render::EventScroll* scrollEvent = static_cast<const FL_Render::EventScroll*>(event.get());
+		}
+		else if (event->GetEventType() == FL_Render::EventType::Char)
+		{
+			const FL_Render::EventChar* charEvent = static_cast<const FL_Render::EventChar*>(event.get());
 		}
 
 		events.pop_back();

@@ -1,4 +1,7 @@
 #pragma once
+#include "Events/InputEvent.h"
+#include "Events/WindowEvents.h"
+
 #include "CameraOrthographic.h"
 #include "IndexBuffer.h"
 #include "Renderer.h"
