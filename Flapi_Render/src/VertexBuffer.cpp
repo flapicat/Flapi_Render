@@ -25,6 +25,11 @@ namespace FL_Render
 		glBufferData(GL_ARRAY_BUFFER, Size * sizeof(float), Vertices, GL_STATIC_DRAW);
 	}
 
+	void VertexBuffer::SetDataVertex(Vertex* Vertices, uint32_t Size)
+	{
+		glBufferData(GL_ARRAY_BUFFER, Size, Vertices, GL_STATIC_DRAW);
+	}
+
 	void VertexBuffer::Bind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);

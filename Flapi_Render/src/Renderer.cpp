@@ -17,7 +17,7 @@ namespace FL_Render
 		uint32_t VertOffset = 0;
 		uint32_t IndiOffset = 0;
 
-		float* vertices;
+		Vertex* vertices;
 		uint32_t VertMaxCount = 1'000'000;
 		uint32_t* indices;
 		uint32_t IndiMaxCount = 1'000'000;
@@ -33,7 +33,7 @@ namespace FL_Render
 		std::shared_ptr<FL_Render::Shader> TexShader;
 		std::shared_ptr<FL_Render::VertexArray> VertexArray;
 	};
-	RendererData data;
+	static RendererData data;
 
 	void Renderer::Init()
 	{
@@ -43,7 +43,7 @@ namespace FL_Render
 		data.maxTexturesBoundAtTheTime = maxFragmentTextures;
 		data.TextureSlots.resize(data.maxTexturesBoundAtTheTime);
 
-		data.vertices = new float[data.VertMaxCount];
+		data.vertices = new Vertex[data.VertMaxCount];
 		data.indices = new uint32_t[data.IndiMaxCount];
 
 		data.Shader.reset(new FL_Render::Shader("../Flapi_Render/Assets/Shaders/default.vert", "../Flapi_Render/Assets/Shaders/default.frag"));
@@ -53,7 +53,7 @@ namespace FL_Render
 
 		std::shared_ptr<FL_Render::VertexBuffer>VB;
 		VB.reset(new FL_Render::VertexBuffer());
-		VB->SetData(nullptr, 0);
+		VB->SetDataVertex(nullptr, 0);
 		data.VertexArray->SetVertexBuff(VB);
 
 		std::shared_ptr<FL_Render::IndexBuffer>IB;
@@ -61,9 +61,9 @@ namespace FL_Render
 		IB->SetData(nullptr, 0);
 		data.VertexArray->SetIndexBuff(IB);
 
-		data.VertexArray->SetAttribPointer(0, 3, GL_FLOAT, false, 6 * sizeof(float), 0);
-		data.VertexArray->SetAttribPointer(1, 2, GL_FLOAT, false, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-		data.VertexArray->SetAttribPointer(2, 1, GL_FLOAT, false, 6 * sizeof(float), (void*)(5 * sizeof(float)));
+		data.VertexArray->SetAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex, Position));
+		data.VertexArray->SetAttribPointer(1, 2, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex, TextureCoords));
+		data.VertexArray->SetAttribPointer(2, 1, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex, TextureID));
 
 		data.VertexArray->UnBind();
 
@@ -97,6 +97,7 @@ namespace FL_Render
 	{
 		RenderCommands::ClearColor(data.ClearColor);
 		RenderCommands::ClearBuffers();
+
 		data.TexShader->Use();
 		data.TexShader->setMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
 
@@ -117,8 +118,8 @@ namespace FL_Render
 
 	void Renderer::EndBatch()
 	{
-		data.VertexArray->GetVertexBuff()->SetData(data.vertices, data.VertOffset);
-		data.VertexArray->GetIndexBuff()->SetData(data.indices,   data.IndiOffset);
+		data.VertexArray->GetVertexBuff()->SetDataVertex(data.vertices, data.VertOffset * sizeof(Vertex));
+		data.VertexArray->GetIndexBuff()->SetData(data.indices,   data.IndiOffset * sizeof(uint32_t));
 
 		for (uint32_t i = 0; i < data.TextureSlotIndex; i++) {
 
@@ -145,47 +146,42 @@ namespace FL_Render
 		}
 	
 		float textureIndex = 0.0f;
-		if (texture != nullptr && texture != data.WhiteTexture)
+		if (texture && texture != data.WhiteTexture)
 		{
+			bool found = false;
 			for (uint32_t i = 1; i < data.TextureSlotIndex; i++)
 			{
-				if (data.TextureSlots[i] && data.TextureSlots[i]->GetRawTexture() == texture->GetRawTexture())
+				if (data.TextureSlots[i] &&
+					data.TextureSlots[i]->GetRawTexture() == texture->GetRawTexture())
 				{
 					textureIndex = (float)i;
+					found = true;
 					break;
 				}
 			}
-	
-			if (textureIndex == 0.0f) 
+			if (!found)
 			{
 				textureIndex = (float)data.TextureSlotIndex;
 				data.TextureSlots[data.TextureSlotIndex] = texture;
 				data.TextureSlotIndex++;
 			}
 		}
-	
-		std::vector<Vertex> transformedVertices = Vertices;
-	
-		for (auto& vertex : transformedVertices)
+
+		uint32_t baseVertex = data.VertOffset;
+
+		for (auto vertex : Vertices)
 		{
-			vertex.Position.x = (vertex.Position.x * size.x) + position.x;
-			vertex.Position.y = (vertex.Position.y * size.y) + position.y;
-			vertex.Position.z = (vertex.Position.z * size.z) + position.z;
-	
+			vertex.Position.x = vertex.Position.x * size.x + position.x;
+			vertex.Position.y = vertex.Position.y * size.y + position.y;
+			vertex.Position.z = vertex.Position.z * size.z + position.z;
 			vertex.TextureID = textureIndex;
+
+			data.vertices[data.VertOffset++] = vertex;
 		}
-	
-		memcpy(data.vertices + data.VertOffset,
-			transformedVertices.data(),
-			transformedVertices.size() * sizeof(Vertex));
-	
-		uint32_t NumberOfCurrentVertexes = Vertices.size() * (data.VertOffset / sizeof(Vertex));
+
 		for (uint32_t i = 0; i < Indices.size(); i++)
 		{
-			data.indices[data.IndiOffset + i] = Indices[i] + NumberOfCurrentVertexes;
+			data.indices[data.IndiOffset++] = Indices[i] + baseVertex;
 		}
-	
-		data.VertOffset += ((uint32_t)transformedVertices.size() * sizeof(Vertex)) / sizeof(float);
-		data.IndiOffset += (uint32_t)Indices.size();
 	}
 }

@@ -4,7 +4,7 @@ layout (location = 1) in vec2 a_TexCoords;
 layout (location = 2) in float a_TexIndex;
 
 out vec2 o_TexCords;
-out float o_TexIndex;
+flat out float o_TexIndex;
 
 uniform mat4 u_ViewProjectionMatrix;
 

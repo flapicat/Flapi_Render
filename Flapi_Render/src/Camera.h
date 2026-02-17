@@ -7,6 +7,7 @@ namespace FL_Render
 	class Camera
 	{
 		friend class CameraOrthographic;
+		friend class CameraPerspective;
 	public:
 		Camera() = default;
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Renderer.h"
 
 namespace FL_Render
 {
@@ -11,6 +12,7 @@ namespace FL_Render
 
 		void SetData(const std::vector<float>& Vertices);
 		void SetData(float* Vertices, uint32_t Size);
+		void SetDataVertex(Vertex* Vertices, uint32_t Size);
 		void Bind();
 		void UnBind();
 		void Delete();

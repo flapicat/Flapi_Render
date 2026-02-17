@@ -7,6 +7,7 @@
 #include "glad/glad.h"
 
 #include "Events/Event.h"
+#include "Core.h"
 
 namespace FL_Render
 {

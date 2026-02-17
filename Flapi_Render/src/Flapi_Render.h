@@ -3,6 +3,7 @@
 #include "Events/WindowEvents.h"
 
 #include "CameraOrthographic.h"
+#include "CameraPerspective.h"
 #include "IndexBuffer.h"
 #include "Renderer.h"
 #include "RenderCommands.h"

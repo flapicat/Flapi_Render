@@ -33,12 +33,18 @@ namespace FL_Render
 			exit(0);
 		}
 
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
 		m_Window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 		if (!m_Window)
 		{
 			std::cout << "ERROR::WINDOW NOT CREATED!\n";
 			exit(0);
 		}
+
 		glfwSetWindowUserPointer(m_Window, this);
 		glfwMakeContextCurrent(m_Window);
 

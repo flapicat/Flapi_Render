@@ -25,8 +25,11 @@ private:
 	float m_LastFrameTime = m_CurrentTime;
 	
 	bool m_Running = true;
+	bool switchCursor = false;
+	glm::vec2 CursorPreviousPosition = {0,0};
 
 	std::unique_ptr<FL_Render::Window> m_Window;
 	std::unordered_map<std::string, std::shared_ptr<FL_Render::Texture>> m_Textures;
-	FL_Render::CameraOrthographic m_OrthoCam;
+	//FL_Render::CameraOrthographic m_OrthoCam;
+	FL_Render::CameraPerspective m_PerspCam;
 };
